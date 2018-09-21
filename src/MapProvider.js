@@ -6,15 +6,43 @@ import CoordForm from "./CoordForm";
 const DaumMap = window.daum.maps;
 
 class MapProvider extends Component {
+
     state = {
         centerLat: 0,
         centerLng: 0,
         address: '',
-        map: null
+        map: null,
+        coordList: this.props.coordList,
+        markers: [] //marker elements
+    }
+
+
+    static getDerivedStateFromProps(nextProps, prevState) {
+        let coords = []
+        let markers = []
+
+        if (nextProps.coordList !== null) {
+            Object.keys(nextProps.coordList).map((k) => {
+                coords.push(nextProps.coordList[k]);
+                let marker = new DaumMap.Marker({
+                    position: new DaumMap.LatLng(nextProps.coordList[k]['lat'], nextProps.coordList[k]['lng'])
+                });
+                marker.setMap(prevState.map);
+                markers.push(marker);
+            });
+
+        }
+
+        return {
+            coordList: nextProps.coordList,
+            markers: markers
+        };
     }
 
     componentDidMount() {
+        console.log("새로 그립니다");
         let el = document.getElementById('map');
+        console.log("지금의 맵코드", this.props.coordList);
 
         let initlatlng = new DaumMap.LatLng(37.5568932, 127.04465341)
 
@@ -75,7 +103,7 @@ class MapProvider extends Component {
             <div>
                 <div className='w3-bar w3-card w3-white w3-container w3-border-bottom' id='map-dashboard'>
                     <div className='w3-bar-item w3-padding'>현재
-                        중심: {this.state.centerLat}, {this.state.centerLng} <br /> 주소: {this.state.address}</div>
+                        중심: {this.state.centerLat}, {this.state.centerLng} <br/> 주소: {this.state.address}</div>
                     <CoordForm className='w3-right'
                                onCreate={this.handleCreate}
                     />

@@ -8,17 +8,19 @@ class SqlForm extends Component {
             sql: null,
             result: null
         }
+
+        this.onFormSubmit = this.onFormSubmit.bind(this)
+        this.onChange = this.onChange.bind(this)
     }
 
     onFormSubmit(e) {
-        e.preventDefault() // Stop form submit
-        console.log("DOING")
-        let traccarServer = 'http://127.0.0.1:8000/api/posdb/'
+        e.preventDefault(); // Stop form submit
+        //let traccarServer = 'http://127.0.0.1:8000/api/posdb/';
+        let traccarServer = 'http://db.hanyang.ac.kr/api/posdb/';
         axios.get(traccarServer).then(response => {
-            console.log("in comp:", response.data['positions']);
             this.setState({
                 result: response.data['positions']
-            })
+            });
             this.props.onCreate(this.state);
         });
     }
