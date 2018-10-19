@@ -21,7 +21,16 @@ class MapProvider extends Component {
         let coords = []
         let markers = []
 
+        console.log("Markers", nextProps.markers, "/", prevState.markers)
+
+        // 새 코드 업로드 -- 디폴트: 기존 마커 전부 삭제
         if (nextProps.coordList !== null) {
+            //기존 마커 삭제
+            for (let i in prevState.markers){
+                prevState.markers[i].setMap(null)
+            }
+
+            //새 코드 리스트
             Object.keys(nextProps.coordList).map((k) => {
                 coords.push(nextProps.coordList[k]);
                 let marker = new DaumMap.Marker({
