@@ -6,7 +6,6 @@ class FileForm extends Component {
         super(props);
         this.state = {
             file: null,
-            fileName: ".CSV",
             csv: null
         }
         this.onFormSubmit = this.onFormSubmit.bind(this)
@@ -16,24 +15,31 @@ class FileForm extends Component {
 
     onFormSubmit(e) {
         e.preventDefault() // Stop form submit
-        let config = {
-            delimiter: ",",	// auto-detect
-            header: true
+
+        try {
+            console.dir(this.state.file)
+            let fileName = this.state.file.name
+
+
+            let config = {
+                delimiter: ",",	// auto-detect
+                header: true,
+                complete: (results) => {
+                    console.log("Finished:", results.data);
+                    this.setState({
+                        csv: results,
+                        fileName: fileName
+                    })
+                    this.props.onCreate(this.state);
+                }
+            }
+            Papa.parse(this.state.file, config);
+            console.log(Papa.parse("37.14,128.11"))
+        }
+        catch(e){
+            alert("잘못된 파일 또는 파일이 없습니다.", e)
         }
 
-        console.dir(this.state.file)
-        let fileName = this.state.file.name
-        Papa.parse(this.state.file, {
-            complete: (results) => {
-                console.log("Finished:", results.data);
-                this.setState({
-                    csv: results,
-                    fileName: fileName
-                })
-                this.props.onCreate(this.state);
-            }
-        }, config);
-        console.log(Papa.parse("37.14,128.11"))
 
         // this.fileUpload(this.state.file).then((response) => {
         //     console.log(response.data);
@@ -41,7 +47,13 @@ class FileForm extends Component {
     }
 
     onChange(e) {
-        this.setState({file: e.target.files[0], fileName: e.target.files[0].name})
+        try {
+            this.setState({file: e.target.files[0], fileName: e.target.files[0].name})
+        }
+        catch (e) {
+            console.log("업로드 취소")
+            this.setState({fileName: undefined})
+        }
     }
 
     fileUpload(file) {
@@ -62,9 +74,9 @@ class FileForm extends Component {
             <div className='w3-display-container'>
                 <form onSubmit={this.onFormSubmit}>
                     <label htmlFor="file-upload" className="custom-file-upload w3-botton">
-                        <i className="fa fa-cloud-upload"></i> <span>{this.state.fileName}</span>
+                        <i className="fa fa-cloud-upload"></i> <span>파일 업로드: {this.state.fileName}</span>
                     </label>
-                    <input id="file-upload" type="file"  onChange={this.onChange}/>
+                    <input id="file-upload" type="file" placeholder="csv 파일 찾기" onChange={this.onChange}/>
                     <button className='w3-button query' type="submit">Upload</button>
                 </form>
             </div>
