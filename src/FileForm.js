@@ -73,11 +73,11 @@ class FileForm extends Component {
         return (
             <div className='w3-display-container'>
                 <form onSubmit={this.onFormSubmit}>
-                    <label htmlFor="file-upload" className="custom-file-upload w3-botton">
-                        <i className="fa fa-cloud-upload"></i> <span>파일 업로드: {this.state.fileName}</span>
-                    </label>
-                    <input id="file-upload" type="file" placeholder="csv 파일 찾기" onChange={this.onChange}/>
-                    <button className='w3-button query' type="submit">Upload</button>
+                    <div className="custom-file">
+                    <input type="file" className="custom-file-input" id="validatedCustomFile" required></input>
+                    <label className="custom-file-label" for="validatedCustomFile">Choose file (csv) ...</label>
+                    <div className="invalid-feedback">Example invalid custom file feedback</div>
+                </div>
                 </form>
             </div>
         )
@@ -85,3 +85,11 @@ class FileForm extends Component {
 }
 
 export default FileForm;
+
+/*
+<label htmlFor="file-upload" className="custom-file-upload w3-botton">
+                        <i className="fa fa-cloud-upload"></i> <span>파일 업로드: {this.state.fileName}</span>
+                    </label>
+                    <input id="file-upload" type="file" placeholder="csv 파일 찾기" onChange={this.onChange}/>
+                    <button className='w3-button query' type="submit">Upload</button>
+                    */
