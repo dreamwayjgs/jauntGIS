@@ -14,4 +14,4 @@ function coord2AddressDaum(lat, lng) {
     })
 }
 
-export default DaumMapAPIs.
+export default DaumMapAPIs;

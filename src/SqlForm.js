@@ -15,8 +15,7 @@ class SqlForm extends Component {
 
     onFormSubmit(e) {
         e.preventDefault(); // Stop form submit
-        //let traccarServer = 'http://127.0.0.1:8000/api/posdb/';
-        let traccarServer = 'http://db.hanyang.ac.kr/api/posdb/';
+        let traccarServer = 'http://127.0.0.1:8000/api/posdb/';        
         axios.get(traccarServer).then(response => {
             this.setState({
                 result: response.data['positions']
