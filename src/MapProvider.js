@@ -16,12 +16,11 @@ class MapProvider extends Component {
         markers: [] //marker elements
     }
 
-
     static getDerivedStateFromProps(nextProps, prevState) {
         let coords = []
         let markers = []
 
-        console.log("Markers", nextProps.markers, "/", prevState.markers)
+        console.log("Current Markers", nextProps.markers, "/", prevState.markers)
 
         // 새 코드 업로드 -- 디폴트: 기존 마커 전부 삭제
         if (nextProps.coordList !== null) {
@@ -110,9 +109,20 @@ class MapProvider extends Component {
     };
 
     render() {
-        return (                            
-                <div id="map">지도 표시되는 공간</div>
-            
+        return (                                        
+            <div className="col">                
+                <div className="row">
+                    <div className="col">
+                        <CoordForm onCreate={this.handleCreate} />
+                    </div>                                
+                    <div className="col" id="currentpos">
+                        현재 중심: {this.state.centerLat}, {this.state.centerLng} <br/> 주소: {this.state.address}
+                    </div>
+                </div>                       
+                <div className="row map-wrapper">                                
+                    <div className="col" id="map">지도 표시되는 공간</div>            
+                </div>            
+            </div>
         );
     }
 }

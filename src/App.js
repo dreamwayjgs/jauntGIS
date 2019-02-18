@@ -1,11 +1,11 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min';
 import React, { Component } from 'react';
-import ReactDOM from 'react-dom';
 
 import './App.css';
 
 import MapProvider from "./MapProvider";
+import DataConsole from "./DataConsole"
 import FileForm from "./FileForm";
 import SqlForm from "./SqlForm"
 
@@ -17,26 +17,36 @@ class App extends Component {
 
     constructor(props) {
         super(props)
-        this.handleFile = this.handleFile.bind(this)
         this.handleMap = this.handleMap.bind(this)
-        this.handleSql = this.handleSql.bind(this)
+        this.handleDataConsole = this.handleDataConsole.bind(this)
+        //this.handleFile = this.handleFile.bind(this)        
+        //this.handleSql = this.handleSql.bind(this)
     }
 
     render() {
         return (
-            <div className="container-fluid">
-                <MapProvider coordList={this.state.coordList} />
-
+            <div className="container-fluid app">
+                <div className="row">                
+                    <MapProvider coordList={this.state.coordList} />                
+                </div>                
+                <div className="row">
+                    <DataConsole />
+                </div>
             </div>
         );
     }
 
     handleMap = () => {
 
-    };
+    }
 
-    handleSql = (data) => {
-        console.log("on APPjs", data.result);
+    handleDataConsole = (groups) => {
+        this.setState({
+
+        })
+    }
+
+    handleSql = (data) => {        
         this.setState({
             coordList: data.result
         });
