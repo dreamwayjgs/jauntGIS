@@ -5,13 +5,15 @@
   "dependencies": {
     "auth0-js": "^9.7.3",
     "axios": "^0.18.0",
+    "merge": ">=1.2.1",
     "papaparse": "^4.6.0",
     "react": "^16.5.0",
     "react-bootstrap": "^0.32.4",
     "react-dom": "^16.5.0",
     "react-modal": "^3.5.1",
     "react-oauth2": "^1.1.2",
-    "react-scripts": "1.1.5"
+    "react-scripts": "1.1.5",
+    "webpack-dev-server": ">=3.1.11"
   },
   "scripts": {
     "start": "react-scripts start",
