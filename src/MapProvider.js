@@ -110,17 +110,17 @@ class MapProvider extends Component {
 
     render() {
         return (                                        
-            <div className="col">                
-                <div className="row">
-                    <div className="col">
+            <div className="h-100 d-flex justify-content-center flex-column">                
+                <div className="row d-flex justify-content-center mt-2">
+                    <div className="px-1">
                         <CoordForm onCreate={this.handleCreate} />
                     </div>                                
-                    <div className="col" id="currentpos">
+                    <div className="px-1" id="currentpos">
                         현재 중심: {this.state.centerLat}, {this.state.centerLng} <br/> 주소: {this.state.address}
                     </div>
                 </div>                       
-                <div className="row map-wrapper">                                
-                    <div className="col" id="map">지도 표시되는 공간</div>            
+                <div className="row flex-grow-1">                                
+                    <div className="col-12" id="map">지도 표시되는 공간</div>            
                 </div>            
             </div>
         );

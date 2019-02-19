@@ -23,8 +23,6 @@ class FileForm extends Component {
         try {
             console.dir(this.state.file)
             let fileName = this.state.file.name
-
-
             let config = {
                 delimiter: ",",	// auto-detect
                 header: true,
@@ -37,8 +35,7 @@ class FileForm extends Component {
                     this.props.onCreate(this.state);
                 }
             }
-            Papa.parse(this.state.file, config);
-            console.log(Papa.parse("37.14,128.11"))
+            Papa.parse(this.state.file, config);            
         }
         catch(e){
             alert("잘못된 파일 또는 파일이 없습니다.", e)
@@ -53,7 +50,6 @@ class FileForm extends Component {
         여러 파일 처리 가능하게, input 에 multiple 속성 만들것
          */
         try {
-            console.log("Change File", e.target.files)
             this.setState({file: e.target.files[0], fileName: e.target.files[0].name})
         }
         catch (e) {
@@ -62,17 +58,14 @@ class FileForm extends Component {
         }
     }
 
+    /**
+     * 
+     * @param {*} file user uploaded file
+     * 파일을 서버에 저장하는 함수
+     */
     fileUpload(file) {
-        console.log(file);
-        // const url = 'http://example.com/file-upload';
-        // const formData = new FormData();
-        // formData.append('file', file)
-        // const config = {
-        //     headers: {
-        //         'content-type': 'multipart/form-data'
-        //     }
-        // }
-        return "OK"
+        console.log(file);        
+        return -1
     }
 
     render() {
@@ -89,10 +82,10 @@ class FileForm extends Component {
                     <div className="modal-body uploader">                                            
                     Available Headers (deviceid, lat, lng, timestamp)                    
                     <form className="form-inline" onSubmit={this.onFormSubmit}>
-                        <div className="input-group">
+                        <div className="input-group container-fluid w-100">
                             <div className="custom-file">
                                 <input type="file" className="custom-file-input" id="csvFile" onChange={this.onChange} />
-                                <label className="custom-file-label" htmlFor="csvFile">{this.state.fileName}</label>
+                                <label className="custom-file-label d-flex justify-content-center" htmlFor="csvFile">{this.state.fileName}</label>
                             </div>
                             <div className="input-group-append">
                                 <button className="btn btn-outline-primary" type="submit">Upload</button>
@@ -101,7 +94,7 @@ class FileForm extends Component {
                     </form>
                     </div>                    
                     <div className="modal-footer">
-                        <button type="button" className="btn btn-primary">Done</button>                        
+                        <button type="button" className="btn btn-secondary" data-dismiss="modal">Done</button>                        
                     </div>
                     </div>
                 </div>

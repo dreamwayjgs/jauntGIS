@@ -6,8 +6,6 @@ import './App.css';
 
 import MapProvider from "./MapProvider";
 import DataConsole from "./DataConsole"
-import FileForm from "./FileForm";
-import SqlForm from "./SqlForm"
 
 class App extends Component {
 
@@ -19,19 +17,18 @@ class App extends Component {
         super(props)
         this.handleMap = this.handleMap.bind(this)
         this.handleDataConsole = this.handleDataConsole.bind(this)
-        //this.handleFile = this.handleFile.bind(this)        
-        //this.handleSql = this.handleSql.bind(this)
     }
 
     render() {
         return (
-            <div className="container-fluid app">
-                <div className="row">                
-                    <MapProvider coordList={this.state.coordList} />                
-                </div>                
-                <div className="row">
+            <div className="app">
+            <div className="">
                     <DataConsole />
                 </div>
+            <div className="">                
+                <MapProvider coordList={this.state.coordList} />                
+            </div>                
+                
             </div>
         );
     }
@@ -66,10 +63,3 @@ class App extends Component {
 }
 
 export default App;
-
-/*
-                <div className='w3-bar-item w3-border-left sql' id='upload-console-sql'>SQL 쿼리로 받아오기
-                    <SqlForm
-                    onCreate={this.handleSql} />
-            </div>
-            */
