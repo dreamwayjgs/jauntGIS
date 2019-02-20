@@ -5,7 +5,7 @@ import React, { Component } from 'react';
 import './App.css';
 
 import MapProvider from "./MapProvider";
-import DataConsole from "./DataConsole"
+import DataMaster from "./DataMaster"
 
 class App extends Component {
 
@@ -16,19 +16,15 @@ class App extends Component {
     constructor(props) {
         super(props)
         this.handleMap = this.handleMap.bind(this)
-        this.handleDataConsole = this.handleDataConsole.bind(this)
+        this.handleDataMaster = this.handleDataMaster.bind(this)
     }
 
     render() {
         return (
-            <div className="app">
-            <div className="">
-                    <DataConsole />
-                </div>
-            <div className="">                
-                <MapProvider coordList={this.state.coordList} />                
-            </div>                
-                
+            <div className="d-flex flex-column app">            
+                <DataMaster />                                
+                <MapProvider coordList={this.state.coordList} />                                             
+            
             </div>
         );
     }
@@ -37,7 +33,7 @@ class App extends Component {
 
     }
 
-    handleDataConsole = (groups) => {
+    handleDataMaster = (groups) => {
         this.setState({
 
         })

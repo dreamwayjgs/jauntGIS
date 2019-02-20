@@ -49,9 +49,8 @@ class MapProvider extends Component {
 
     componentDidMount() {
         DaumMap.load(() => {
-            console.log("새로 그립니다");
-            let el = document.getElementById('map');
-            console.log("지금의 맵코드", this.props.coordList);
+            console.log("[MP] 첫 마운트");
+            let el = document.getElementById('map');            
 
             let initlatlng = new DaumMap.LatLng(37.5568932, 127.04465341)
 
@@ -108,10 +107,10 @@ class MapProvider extends Component {
 
     };
 
-    render() {
+    render() {        
         return (                                        
-            <div className="h-100 d-flex justify-content-center flex-column">                
-                <div className="row d-flex justify-content-center mt-2">
+            <div className="d-flex flex-column h-100">                
+                <div className="d-flex justify-content-center">
                     <div className="px-1">
                         <CoordForm onCreate={this.handleCreate} />
                     </div>                                
@@ -119,8 +118,8 @@ class MapProvider extends Component {
                         현재 중심: {this.state.centerLat}, {this.state.centerLng} <br/> 주소: {this.state.address}
                     </div>
                 </div>                       
-                <div className="row flex-grow-1">                                
-                    <div className="col-12" id="map">지도 표시되는 공간</div>            
+                <div className="d-flex h-100">                                
+                    <div className="w-100 h-100" id="map">지도 표시되는 공간</div>            
                 </div>            
             </div>
         );
