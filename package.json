@@ -1,6 +1,7 @@
 {
-  "lat": "cssc-daum-api",
-  "version": "0.1.0",
+  "homepage": "http://db.hanyang.ac.kr/traccar",
+  "lat": "jauntGIS",
+  "version": "1.0.0",
   "private": true,
   "dependencies": {
     "auth0-js": "^9.7.3",
