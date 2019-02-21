@@ -3,58 +3,59 @@ import 'bootstrap/dist/js/bootstrap.bundle.min';
 import React, { Component } from 'react';
 
 import './App.css';
+import Debugger from './Debugger'
 
 import MapProvider from "./MapProvider";
 import DataMaster from "./DataMaster"
 
 class App extends Component {
-
+    
     state = {
-        coordList: null
+        fixes: [],
+        isFixUpdated: false,
+        focusFixId: 0
     }
 
-    constructor(props) {
-        super(props)
-        this.handleMap = this.handleMap.bind(this)
-        this.handleDataMaster = this.handleDataMaster.bind(this)
+    componentDidUpdate(){
+        Debugger.p(this, 'after render')
+
+        if(this.state.isFixUpdated){
+            Debugger.p(this, '업뎃 트랜잭션 종료')
+            this.setState({
+                isFixUpdated: false
+            })
+        }
     }
 
-    render() {
+    updateFixes = (data) => {        
+        Debugger.p(this, 'get updated fixes:', data)
+        this.setState({
+            fixes: data,
+            isFixUpdated: true
+        })
+    }
+
+    focusFix = (fixId) =>{
+        console.log("이마커가 찍힘", fixId)
+        this.setState({
+            focusFixId: fixId
+        })
+    }
+
+    render() {        
+        Debugger.p(this, 'render')
         return (
             <div className="d-flex flex-column app">            
-                <DataMaster />                                
-                <MapProvider coordList={this.state.coordList} />                                             
-            
+                <DataMaster
+                    fixes={this.state.fixes} 
+                    updateFixes={this.updateFixes} 
+                    focusFixId={this.state.focusFixId} />                                
+                <MapProvider 
+                    fixes={this.state.fixes} 
+                    isFixUpdated={this.state.isFixUpdated} 
+                    onFocus={this.focusFix} />
             </div>
         );
-    }
-
-    handleMap = () => {
-
-    }
-
-    handleDataMaster = (groups) => {
-        this.setState({
-
-        })
-    }
-
-    handleSql = (data) => {        
-        this.setState({
-            coordList: data.result
-        });
-    };
-
-    static getDerivedStateFromProps(nextProps, prevState) {
-        return { coordList: prevState.coordList };
-    }
-
-    handleFile = (data) => {
-        console.dir(data)
-        console.dir(data.csv.data)
-        this.setState({
-            coordList: data.csv.data
-        })
     }
 }
 

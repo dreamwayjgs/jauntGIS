@@ -1,5 +1,7 @@
 import React, {Component} from 'react';
 
+import Debugger from './Debugger'
+
 class CoordForm extends Component {
     state = {
         lat: '',
@@ -18,13 +20,12 @@ class CoordForm extends Component {
         // 페이지 리로딩 방지
         e.preventDefault();
         // 상태값을 onCreate 를 통하여 부모에게 전달
-        this.props.onCreate(this.state);
-
+        this.props.updateMapCenter(this.state);
     }
 
     render() {
+        Debugger.p(this, 'render')
         return (
-            <div className="float-right">
             <form onSubmit={this.handleSubmit}>
                 <div className="form-row align-items-center">
                     <div className="col-auto">
@@ -43,8 +44,7 @@ class CoordForm extends Component {
                     <button type="submit" className="btn btn-primary mb-2">Go</button>
                     </div>
                 </div>
-            </form>
-            </div>
+            </form>            
         );
     }
 }

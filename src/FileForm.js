@@ -1,6 +1,8 @@
 import React, {Component} from 'react';
 import Papa from 'papaparse';
 
+import Debugger from './Debugger'
+
 class FileForm extends Component {
     constructor(props) {
         super(props);
@@ -69,6 +71,7 @@ class FileForm extends Component {
     }
 
     render() {
+        Debugger.p(this, 'render')
         return (
             <div className="modal" id="fileform" role="dialog">
                 <div className="modal-dialog" role="document">
@@ -104,17 +107,3 @@ class FileForm extends Component {
 }
 
 export default FileForm;
-
-/*
-<label htmlFor="file-upload" className="custom-file-upload">
-                        <i className="fa fa-cloud-upload"></i> <span>파일 업로드: {this.state.fileName}</span>
-                    </label>
-                    <input id="file-upload" type="file" placeholder="csv 파일 찾기" onChange={this.onChange}/>
-                    <button className='w3-button query' type="submit">Upload</button>
-
-<label htmlFor="file-upload" className="custom-file-upload w3-botton">
-                        <i className="fa fa-cloud-upload"></i> <span>파일 업로드: {this.state.fileName}</span>
-                    </label>
-                    <input id="file-upload" type="file" placeholder="csv 파일 찾기" onChange={this.onChange}/>
-                    <button className='w3-button query' type="submit">Upload</button>
-                    */
