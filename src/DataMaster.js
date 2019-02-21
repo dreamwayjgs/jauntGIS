@@ -8,7 +8,7 @@ import Debugger from './Debugger'
 class DataMaster extends Component {
     state = {
         data: null,
-        isVisiableDataSource: false,
+        isVisiableDataSource: true,
         isVisiableDataControl: true,
         promptType: null,        
         dataSources: [],
