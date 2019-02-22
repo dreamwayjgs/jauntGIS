@@ -85,7 +85,7 @@ class DataSource extends Component {
             <th scope="row">{datasrc.id}</th>
             <td>{datasrc.name}</td>
             <td>{datasrc.type}</td>
-            <td style={{backgroundColor:datasrc.color}}>{datasrc.color}</td>
+            <td style={{backgroundColor:'#'+datasrc.color}}>{datasrc.color}</td>
             <td>{datasrc.positions.length}</td>
             <td><button className="btn btn-danger" onClick={this.removeDataSrc}>Remove</button></td>
         </tr>)})
