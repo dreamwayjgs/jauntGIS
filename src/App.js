@@ -1,73 +1,62 @@
-import React, {Component} from 'react';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap/dist/js/bootstrap.bundle.min';
+import React, { Component } from 'react';
+
 import './App.css';
-import FileForm from "./FileForm";
-import MapProvider from "./MapProvider"
-import SqlForm from "./SqlForm"
+import Debugger from './Debugger'
+
+import MapProvider from "./MapProvider";
+import DataMaster from "./DataMaster"
 
 class App extends Component {
-
+    
     state = {
-        coordList: null
+        fixes: [],
+        isFixUpdated: false,
+        focusFixId: 0
     }
 
-    constructor(props) {
-        super(props)
-        this.handleFile = this.handleFile.bind(this)
-        this.handleMap = this.handleMap.bind(this)
-        this.handleSql = this.handleSql.bind(this)
+    componentDidUpdate(){
+        Debugger.p(this, 'after render')
+
+        if(this.state.isFixUpdated){
+            Debugger.p(this, '업뎃 트랜잭션 종료')
+            this.setState({
+                isFixUpdated: false
+            })
+        }
     }
 
-    render() {
+    updateFixes = (data) => {        
+        Debugger.p(this, 'get updated fixes:', data)
+        this.setState({
+            fixes: data,
+            isFixUpdated: true
+        })
+    }
+
+    focusFix = (fixId) =>{
+        console.log("이마커가 찍힘", fixId)
+        this.setState({
+            focusFixId: fixId
+        })
+    }
+
+    render() {        
+        Debugger.p(this, 'render')
         return (
-            <div className="w3-top">
-                <nav className='w3-bar w3-wide w3-padding w3-card w3-white w3-display-container components'>
-                    <div className='w3-bar-item w3-display-top-left w3-white' id="upload-console-title"><h3>데이터 업로드</h3>
-                    </div>
-                    <div className='w3-bar-item w3-border-left' id='upload-console-csv'>csv 업로드
-                        <FileForm
-                            onCreate={this.handleFile}/>
-                    </div>
-                </nav>
-                <MapProvider coordList={this.state.coordList}/>
-
+            <div className="d-flex flex-column app">            
+                <DataMaster
+                    fixes={this.state.fixes} 
+                    updateFixes={this.updateFixes} 
+                    focusFixId={this.state.focusFixId} />                                
+                <MapProvider 
+                    fixes={this.state.fixes} 
+                    isFixUpdated={this.state.isFixUpdated} 
+                    onFocus={this.focusFix} />
             </div>
         );
-    }
-
-    handleMap = () => {
-
-    };
-
-    handleSql = (data) => {
-        console.log("on APPjs", data.result);
-        this.setState({
-            coordList: data.result
-        });
-    };
-
-    static getDerivedStateFromProps(nextProps, prevState) {
-        return {coordList: prevState.coordList};
-    }
-
-    handleFile = (data) => {
-        console.dir(data)
-        console.dir(data.csv.data)
-        this.setState({
-            coordList: data.csv.data
-        })
     }
 }
 
 export default App;
-
-/*
-<header className="w3-bar w3-wide w3-padding w3-black w3-card">
-                    <div href="/" className="w3-bar-item w3-button">
-                        <h1 className="App-title">Welcome to CSSC@Hanyang Home!</h1></div>
-                </header>
-
-                    <div className='w3-bar-item w3-border-left sql' id='upload-console-sql'>SQL 쿼리로 받아오기
-                        <SqlForm
-                            onCreate={this.handleSql}/>
-                    </div>
- */

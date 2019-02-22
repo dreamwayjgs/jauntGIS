@@ -1,7 +1,11 @@
-import React, {Component} from 'react';
-import logo from './logo.svg';
-import './App.css';
+/* global daum */
+
+import React, { Component } from 'react';
 import CoordForm from "./CoordForm";
+import DaumMapApi from "./DaumMapApi"
+
+
+import Debugger from './Debugger'
 
 const DaumMap = window.daum.maps;
 
@@ -12,78 +16,108 @@ class MapProvider extends Component {
         centerLng: 0,
         address: '',
         map: null,
-        coordList: this.props.coordList,
-        markers: [] //marker elements
+        markers: [],
+        fixes: []
     }
 
-
-    static getDerivedStateFromProps(nextProps, prevState) {
-        let coords = []
-        let markers = []
-
-        console.log("Markers", nextProps.markers, "/", prevState.markers)
-
-        // 새 코드 업로드 -- 디폴트: 기존 마커 전부 삭제
-        if (nextProps.coordList !== null) {
-            //기존 마커 삭제
-            for (let i in prevState.markers){
-                prevState.markers[i].setMap(null)
-            }
-
-            //새 코드 리스트
-            Object.keys(nextProps.coordList).map((k) => {
-                coords.push(nextProps.coordList[k]);
-                let marker = new DaumMap.Marker({
-                    position: new DaumMap.LatLng(nextProps.coordList[k]['lat'], nextProps.coordList[k]['lng'])
-                });
-                marker.setMap(prevState.map);
-                markers.push(marker);
-            });
-
+    componentDidUpdate(prevProps, prevState) {
+        if (prevState.markers !== this.state.markers) {
+            // 마커 바뀜
+            this.state.markers.map((marker, index) => {                
+                DaumMap.event.addListener(marker, 'click', () => {
+                    // 마커 클릭 이벤트                    
+                    this.moveMapCenter(marker.getPosition().getLat(), marker.getPosition().getLng())                                        
+                    this.props.onFocus(index)                    
+                    let fixes = this.state.fixes
+                    let infoWindow = new DaumMap.InfoWindow({
+                        content: `<div>
+                        <span>Src: ${fixes[index].srcId} </span>
+                        <span>Id: ${fixes[index].id} </span>
+                        <span style='background-color:#${fixes[index].color};'>${fixes[index].color}</span>
+                        </div>`,
+                        removable: true
+                    })
+                    infoWindow.open(this.state.map, marker)
+                })
+            })
         }
+    }
 
-        return {
-            coordList: nextProps.coordList,
-            markers: markers
-        };
+    /**
+     * 
+     * @param {*} nextProps 
+     * @param {*} nextState 
+     * 렌더링 전. props의 정보에 따라 마커를 렌더링 해야한다
+     */
+    shouldComponentUpdate(nextProps, nextState) {
+        if (this.props.isFixUpdated) {
+            Debugger.p(this, 'marker update', this.props, nextProps, this.state, nextState)
+            // 렌더링 전에 받아놓은 fixes 로 마커를 처리            
+
+            let fixes = nextProps.fixes            
+            let center = [this.state.centerLat, this.state.centerLng]
+            if(fixes.length > this.state.fixes.length){
+                // Source added
+                center = [fixes[this.state.fixes.length].lat, fixes[this.state.fixes.length].lng]
+            }            
+            // 마커 그리기
+            this.setState({
+                fixes: fixes,
+                markers: fixes.map(fix => (
+                    fix.daumMarker(this.state.map)
+                )),
+                centerLat: center[0],
+                centerLng: center[1]
+            }, () => {
+                console.log("marker OK")
+                this.moveMapCenter(this.state.centerLat, this.state.centerLng)
+            })
+        }
+        return true
     }
 
     componentDidMount() {
-        console.log("새로 그립니다");
-        let el = document.getElementById('map');
-        console.log("지금의 맵코드", this.props.coordList);
+        DaumMap.load(() => {
+            // init location
+            let lat = 37.555589
+            let lng = 127.049051
 
-        let initlatlng = new DaumMap.LatLng(37.5568932, 127.04465341)
+            //지도 생성
+            let map = new DaumMap.Map(document.getElementById('map'), {
+                center: new DaumMap.LatLng(33.4863, 126.489),
+                level: 3,
+            });
+            DaumMapApi.getAddress(lat, lng).then(result => {
+                this.setState({
+                    address: result,
+                    centerLat: lat,
+                    centerLng: lng,
+                    map: map
+                })
+            })
 
-        this.setState({
-            centerLat: initlatlng.getLat(),
-            centerLng: initlatlng.getLng(),
-        });
+            //이동시 지도 중앙 좌표와 동 갱신
+            DaumMap.event.addListener(map, 'dragend', () => {
+                let latlng = map.getCenter();
 
-        getAddress(this.state.centerLat, this.state.centerLng).then(result => {
-            this.setState({
-                address: result
+                DaumMapApi.getAddress(latlng.getLat(), latlng.getLng()).then(result => {
+                    this.setState({
+                        centerLat: latlng.getLat(),
+                        centerLng: latlng.getLng(),
+                        address: result
+                    })
+                })
             })
         })
-        //지도 생성
-        let map = new DaumMap.Map(el, {
-            center: initlatlng,
-            level: 3
-        });
+    }
 
+    moveMapCenter = (lat, lng) => {
         this.setState({
-            map: map
-        });
-
-        //이동시 지도 중앙 좌표와 동 갱신
-        DaumMap.event.addListener(map, 'dragend', () => {
-            let latlng = map.getCenter();
-            this.setState({
-                centerLat: latlng.getLat(),
-                centerLng: latlng.getLng()
-            });
-
-            getAddress(this.state.centerLat, this.state.centerLng).then(result => {
+            centerLat: lat,
+            centerLng: lng,
+        }, () => {
+            this.state.map.setCenter(new DaumMap.LatLng(lat, lng));
+            DaumMapApi.getAddress(lat, lng).then(result => {
                 this.setState({
                     address: result
                 })
@@ -91,52 +125,28 @@ class MapProvider extends Component {
         })
     }
 
-    handleCreate = (data) => {
-        this.setState({
-            centerLat: data.lat,
-            centerLng: data.lng
-        });
-
-        getAddress(this.state.centerLat, this.state.centerLng).then(result => {
-            this.setState({
-                address: result
-            })
-        })
-
-        this.state.map.setCenter(new DaumMap.LatLng(data.lat, data.lng));
-
+    updateMapCenter = (data) => {
+        this.moveMapCenter(data.lat, data.lng)
     };
 
     render() {
+        Debugger.p(this, 'render')
         return (
-            <div>
-                <div className='w3-bar w3-card w3-white w3-container w3-border-bottom' id='map-dashboard'>
-                    <div className='w3-bar-item w3-padding'>현재
-                        중심: {this.state.centerLat}, {this.state.centerLng} <br/> 주소: {this.state.address}</div>
-                    <CoordForm className='w3-right'
-                               onCreate={this.handleCreate}
-                    />
+            <div className="d-flex flex-column h-100">
+                <div className="d-flex justify-content-center">
+                    <div className="px-1">
+                        <CoordForm updateMapCenter={this.updateMapCenter} />
+                    </div>
+                    <div className="px-1" id="currentpos">
+                        현재 중심: {this.state.centerLat}, {this.state.centerLng} <br /> 주소: {this.state.address}
+                    </div>
                 </div>
-                <div id="map">지도 표시되는 공간</div>
+                <div className="d-flex h-100">
+                    <div className="w-100 h-100" id="map">지도 표시되는 공간</div>
+                </div>
             </div>
         );
     }
-}
-
-async function getAddress(lat, lng) {
-    let result = await coord2AddressDaum(lat, lng);
-    return result;
-}
-
-function coord2AddressDaum(lat, lng) {
-    return new Promise(resolve => {
-        let geocoder = new DaumMap.services.Geocoder();
-        geocoder.coord2Address(lng, lat, (result, status) => {
-            if (status === DaumMap.services.Status.OK) {
-                resolve(result[0].address.address_name);
-            }
-        })
-    })
 }
 
 export default MapProvider;
